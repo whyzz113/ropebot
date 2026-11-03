@@ -45,6 +45,8 @@ node server.mjs 18000
   - `node _tools/pages_e2e.mjs <目录>` —— 纯静态无后端环境下用无头浏览器真跑一遍。
   - `node _tools/live_check.mjs <URL>` —— 对线上地址跑同样的端到端检查。
 
+  > 这三个脚本在 `_tools/` 下，该目录被 `.gitignore` 排除，只存在于本机。
+
 ### 1.2 本地开机自启与局域网分享（可选）
 
 - **开机自启**：已在「启动」文件夹放了 `CableRobotServer.lnk`（用户登录后自动后台拉起 `node server.mjs 18000`，窗口最小化）。要彻底停掉，删掉这个快捷方式即可；临时停服务可在任务管理器结束 `node.exe`，或 `Stop-Process -Id (Get-NetTCPConnection -LocalPort 18000).OwningProcess -Force`。
@@ -377,6 +379,8 @@ _tools/pages_check.mjs    模拟 Pages 逐层检查所有相对资源引用
 _tools/pages_e2e.mjs      纯静态无后端环境下的浏览器端到端检查
 _tools/live_check.mjs     对线上地址跑端到端检查
 ```
+
+> `_tools/` 整目录在 `.gitignore` 里（本地工具与截图脚本，不入库），所以上面这 4 个脚本只存在于本机。
 
 ---
 
