@@ -1,0 +1,9 @@
+# 统一换行符，避免 Windows 上提交后差异满屏
+* text=auto eol=lf
+
+# 二进制文件不要做换行转换
+*.png binary
+*.jpg binary
+*.exe binary
+*.pdf binary
+*.zip binary

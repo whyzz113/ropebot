@@ -1,0 +1,35 @@
+# ---- 与本项目无关的目录（体积大 / 私有） ----
+大肥鱼/
+新框架/
+_refs/
+_tools/
+
+# ---- 编译产物 ----
+firmware/build/
+firmware/*.obj
+*.o
+*.exe
+*.a
+*.elf
+*.bin
+*.hex
+
+# ---- 运行日志与临时文件 ----
+server_out.log
+server_err.log
+cf_*.log
+*.tmp
+
+# ---- 编辑器 / 系统 ----
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# ---- 依赖 ----
+node_modules/
+.npm-cache/
+__pycache__/
+*.pyc

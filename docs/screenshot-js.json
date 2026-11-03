@@ -1,0 +1,15 @@
+{
+  "info": {
+    "state": "仿真核心加载中…",
+    "clock": "t = 0.000 s",
+    "hud": "-",
+    "feas": "-",
+    "log": [
+      "[17:31:09] WebGL2 渲染器就绪（无第三方依赖，离线可用）"
+    ],
+    "gl": "no webgl2"
+  },
+  "logs": [
+    "[error] Failed to load resource: the server responded with a status of 403 (Forbidden)"
+  ]
+}
