@@ -13,21 +13,45 @@
 
 ## 1. 快速开始
 
+**在线直接用（无需安装任何东西）：<https://whyzz113.github.io/ropebot/>**
+
+整个仿真跑在浏览器 Worker 里，纯静态托管即可，不需要后端。
+
+本地跑（零依赖，需要 Node 18+）：
+
 ```powershell
-# 1) 启动本地服务器（零依赖，需要 Node 18+）
+# 1) 启动本地服务器
 node server.mjs 18000
 
 # 2) 浏览器打开
 #    http://127.0.0.1:18000/web/index.html
 ```
 
-### 1.1 开机自启与分享给别人（已配置）
+### 1.1 GitHub Pages 公网部署（已上线）
+
+- **网址**：<https://whyzz113.github.io/ropebot/> —— 任何人、任何网络都能直接打开，不需要 VPN，也不需要本机开机。
+- **仓库**：<https://github.com/whyzz113/ropebot>（public，main 分支根目录直接作为站点）。
+- **为什么能纯静态跑**：仿真在 `sim/core/worker.js` 这个 Web Worker 里算，只通过 `postMessage` 通信，不碰 `/api`。页面里唯一用到后端的是「固件模式」上传 `.hex`（`web/firmware-source.js` 的 `/api/fw`），线上会自动降级为不可用，其余功能全部正常。
+- **更新线上版本**：
+
+  ```powershell
+  git add -A; git commit -m "说明"; git push
+  # Pages 会在约 1 分钟内自动重建
+  ```
+
+  本机 `git` 全局配的是 `socks5://127.0.0.1:7897`，而 git 的 curl 不支持 socks5，推送时须加 `-c http.proxy=http://127.0.0.1:7897 -c https.proxy=http://127.0.0.1:7897`（`_tools/deploy_github.mjs` 已内置）。
+- **验证工具**：
+  - `node _tools/pages_check.mjs <目录>` —— 模拟 Pages 逐层跟随所有相对资源，返回 404 会指明是哪个引用。
+  - `node _tools/pages_e2e.mjs <目录>` —— 纯静态无后端环境下用无头浏览器真跑一遍。
+  - `node _tools/live_check.mjs <URL>` —— 对线上地址跑同样的端到端检查。
+
+### 1.2 本地开机自启与局域网分享（可选）
 
 - **开机自启**：已在「启动」文件夹放了 `CableRobotServer.lnk`（用户登录后自动后台拉起 `node server.mjs 18000`，窗口最小化）。要彻底停掉，删掉这个快捷方式即可；临时停服务可在任务管理器结束 `node.exe`，或 `Stop-Process -Id (Get-NetTCPConnection -LocalPort 18000).OwningProcess -Force`。
 - **服务器已绑定 `0.0.0.0`**（不再只限 `127.0.0.1`），所以局域网 / 虚拟网卡都能直接访问，无需改代码。
 - **自己 / 同一 Wi‑Fi 的人**：打开 `http://10.133.154.59:18000/web/index.html`（这是本机 WLAN 地址，重启路由器可能变化；可用 `ipconfig` 查 `IPv4`）。
-- **用 Radmin VPN 跨公网分享**：本机已装 Radmin VPN 且网卡 `Up`，本机在虚拟网里的地址是 `26.88.127.255`（用 Radmin 自带的「显示我的 IP」确认）。把对方也拉进同一个 Radmin 网络后，对方直接访问 `http://26.88.127.255:18000/web/index.html` 即可，不需要任何公网隧道。
-- **关于 Cloudflare / ngrok 等公网隧道**：本机出口 DNS 不解析 `argotunnel.com` / `api.trycloudflare.com`，`cloudflared` 实测无法建立隧道；防火墙本身是全关状态（入站默认放行），所以问题不在防火墙。若日后需要免 VPN 的公网网址，请在能正常解析上述域名的网络或更换 DNS 后，用 `cloudflared tunnel --url http://localhost:18000` 重新尝试。
+- **用 Radmin VPN 跨公网分享**：本机已装 Radmin VPN 且网卡 `Up`，本机在虚拟网里的地址是 `26.88.127.255`（用 Radmin 自带的「显示我的 IP」确认）。把对方也拉进同一个 Radmin 网络后，对方直接访问 `http://26.88.127.255:18000/web/index.html` 即可。
+- **公网分享推荐走 GitHub Pages**（见 §1.1），那条路不需要本机开机、也不需要对方装任何软件。本地服务只在需要「固件模式上传 .hex」时才必备。
 
 要使用固件模式，先编译一次固件（二选一）：
 
@@ -347,6 +371,11 @@ firmware/                 STM32 控制代码（C，可直接烧录）
 
 sim/test/compare_core.mjs  C 与 JS 核心逐项对比
 server.mjs                本地服务器（静态托管 + 参数读写 + 固件桥接）
+index.html                仓库根跳转页（GitHub Pages 入口，跳到 web/index.html）
+_tools/deploy_github.mjs  一键部署到 GitHub Pages（建仓 → push → 开 Pages → 验证）
+_tools/pages_check.mjs    模拟 Pages 逐层检查所有相对资源引用
+_tools/pages_e2e.mjs      纯静态无后端环境下的浏览器端到端检查
+_tools/live_check.mjs     对线上地址跑端到端检查
 ```
 
 ---
